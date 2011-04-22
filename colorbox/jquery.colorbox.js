@@ -47,7 +47,10 @@
 		onClosed: false,
 		overlayClose: true,		
 		escKey: true,
-		arrowKey: true
+		arrowKey: true,
+		
+		// new functionality
+		slimFrame: false
 	},
 	
 	// Abstracting the HTML and event identifiers for easy rebranding
@@ -222,6 +225,12 @@
 			
 			if (!open) {
 				open = active = true; // Prevents the page-change action from queuing up if the visitor holds down the left or right keys.
+				
+				
+				if(settings.slimFrame && settings.slimFrame != "") {
+					console.log('here in slimFrame section');
+					$content.addClass('slimFrame');
+				}
 				
 				$box.show();
 				
@@ -413,6 +422,9 @@
 				}
 			}
 		});
+		
+		// Add listeners for slimFrame
+		
 	};
 	
 	publicMethod.remove = function () {
