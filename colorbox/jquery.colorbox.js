@@ -230,6 +230,9 @@
 				if(settings.slimFrame && settings.slimFrame != "") {
 					console.log('here in slimFrame section');
 					$content.addClass('slimFrame');
+					
+					// need to set the "interfaceHeight" to proper height
+					console.log($content.height());
 				}
 				
 				$box.show();
@@ -367,6 +370,7 @@
 		
 		// Cache values needed for size calculations
 		interfaceHeight = $topBorder.height() + $bottomBorder.height() + $content.outerHeight(true) - $content.height();//Subtraction needed for IE6
+		slimFrameInterfaceHeight = $topBorder.height() + $bottomBorder.height() - $content.height();//Subtraction needed for IE6
 		interfaceWidth = $leftBorder.width() + $rightBorder.width() + $content.outerWidth(true) - $content.width();
 		loadedHeight = $loaded.outerHeight(true);
 		loadedWidth = $loaded.outerWidth(true);
@@ -655,7 +659,7 @@
 	};
 
 	publicMethod.load = function (launched) {
-		var href, setResize, prep = publicMethod.prep;
+		var href, setResize, prep = publicMethod.prep, currInterfaceHeight;
 		
 		active = true;
 		
@@ -667,12 +671,18 @@
 			process($.extend(settings, $.data(element, colorbox)));
 		}
 		
+		// setting currInterfaceHeight to use either slimFrameHeight or the normal height
+		currInterfaceHeight = (settings.slimFrame)? slimFrameInterfaceHeight : interfaceHeight;
+		console.log('setting currInterfaceHeight----' + currInterfaceHeight);
+		console.log('slimFrame----' + settings.slimFrame);
+		console.log('slimFrameInterfaceHeight----' + slimFrameInterfaceHeight);
+		console.log('defaults----' + defaults.slimFrame);
 		trigger(event_purge);
 		
 		trigger(event_load, settings.onLoad);
 		
 		settings.h = settings.height ?
-				setSize(settings.height, 'y') - loadedHeight - interfaceHeight :
+				setSize(settings.height, 'y') - loadedHeight - currInterfaceHeight :
 				settings.innerHeight && setSize(settings.innerHeight, 'y');
 		
 		settings.w = settings.width ?
@@ -690,7 +700,7 @@
 			settings.mw = settings.w && settings.w < settings.mw ? settings.w : settings.mw;
 		}
 		if (settings.maxHeight) {
-			settings.mh = setSize(settings.maxHeight, 'y') - loadedHeight - interfaceHeight;
+			settings.mh = setSize(settings.maxHeight, 'y') - loadedHeight - currInterfaceHeight;
 			settings.mh = settings.h && settings.h < settings.mh ? settings.h : settings.mh;
 		}
 		
